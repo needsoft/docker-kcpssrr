@@ -1,6 +1,6 @@
 FROM alpine:3.7
 
-LABEL maintainer="mritd <mritd1234@gmail.com>"
+LABEL maintainer="none"
 
 ARG TZ='Asia/Shanghai'
 ARG BRANCH=akkariiin/dev
