@@ -7,7 +7,7 @@ ARG BRANCH=akkariiin/dev
 ARG DIR_NAME=akkariiin-dev
 
 ENV TZ $TZ
-ENV KCP_VERSION 20180305
+ENV KCP_VERSION 20180316
 ENV KCP_DOWNLOAD_URL https://github.com/xtaci/kcptun/releases/download/v${KCP_VERSION}/kcptun-linux-amd64-${KCP_VERSION}.tar.gz
 ENV SSRR_DOWNLOAD_URL https://github.com/shadowsocksrr/shadowsocksr/archive/$BRANCH.tar.gz
 
@@ -23,7 +23,7 @@ RUN if [ $(wget -qO- ipinfo.io/country) == CN ]; then echo "http://mirrors.ustc.
 
 RUN apk upgrade --update \
     && apk add bash tzdata libsodium \
-    && apk add --virtual .build-deps \
+    && apk add --virtual \
         autoconf \
         automake \
         xmlto \
@@ -39,13 +39,12 @@ RUN apk upgrade --update \
         pcre-dev \
         udns-dev \
         tar \
-        git \
-    && curl -sSLO ${KCP_DOWNLOAD_URL} \
+        git
+
+RUN wget -qO- --no-check-certificate  ${KCP_DOWNLOAD_URL} \
     && tar -zxf kcptun-linux-amd64-${KCP_VERSION}.tar.gz \
     && mv server_linux_amd64 /usr/bin/kcpserver \
     && mv client_linux_amd64 /usr/bin/kcpclient \
-    && ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
-    && echo $TZ > /etc/timezone \
     && rm -rf kcptun-linux-amd64-${KCP_VERSION}.tar.gz \
         /var/cache/apk/*
 
