@@ -5,10 +5,10 @@ LABEL maintainer="none"
 ARG TZ='Asia/Shanghai'
 ARG BRANCH=akkariiin/dev
 ARG DIR_NAME=akkariiin-dev
+ARG KCP_VERSION=20180316
 
 ENV TZ $TZ
-ENV KCP_VERSION 20180316
-ENV KCP_DOWNLOAD_URL https://github.com/xtaci/kcptun/releases/download/v${KCP_VERSION}/kcptun-linux-amd64-${KCP_VERSION}.tar.gz
+ENV KCP_DOWNLOAD_URL https://github.com/xtaci/kcptun/releases/download/v$KCP_VERSION/kcptun-linux-amd64-$KCP_VERSION.tar.gz
 ENV SSRR_DOWNLOAD_URL https://github.com/shadowsocksrr/shadowsocksr/archive/$BRANCH.tar.gz
 
 RUN if [ $(wget -qO- ipinfo.io/country) == CN ]; then echo "http://mirrors.ustc.edu.cn/alpine/v3.7/main/" > /etc/apk/repositories ;fi \
@@ -41,11 +41,11 @@ RUN apk upgrade --update \
         tar \
         git
 
-RUN wget -qO- --no-check-certificate  ${KCP_DOWNLOAD_URL} \
-    && tar -zxf kcptun-linux-amd64-${KCP_VERSION}.tar.gz \
+RUN wget --no-check-certificate  ${KCP_DOWNLOAD_URL} \
+    && tar -zxf kcptun-linux-amd64-$KCP_VERSION.tar.gz \
     && mv server_linux_amd64 /usr/bin/kcpserver \
     && mv client_linux_amd64 /usr/bin/kcpclient \
-    && rm -rf kcptun-linux-amd64-${KCP_VERSION}.tar.gz \
+    && rm -rf kcptun-linux-amd64-$KCP_VERSION.tar.gz \
         /var/cache/apk/*
 
 ADD entrypoint.sh /entrypoint.sh
