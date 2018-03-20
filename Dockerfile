@@ -1,14 +1,14 @@
 FROM alpine:3.7
 
-LABEL maintainer="mritd <mritd1234@gmail.com>"
+LABEL maintainer="none"
 
 ARG TZ='Asia/Shanghai'
 ARG BRANCH=akkariiin/dev
 ARG DIR_NAME=akkariiin-dev
+ARG KCP_VERSION=20180316
 
 ENV TZ $TZ
-ENV KCP_VERSION 20180305
-ENV KCP_DOWNLOAD_URL https://github.com/xtaci/kcptun/releases/download/v${KCP_VERSION}/kcptun-linux-amd64-${KCP_VERSION}.tar.gz
+ENV KCP_DOWNLOAD_URL https://github.com/xtaci/kcptun/releases/download/v$KCP_VERSION/kcptun-linux-amd64-$KCP_VERSION.tar.gz
 ENV SSRR_DOWNLOAD_URL https://github.com/shadowsocksrr/shadowsocksr/archive/$BRANCH.tar.gz
 
 RUN if [ $(wget -qO- ipinfo.io/country) == CN ]; then echo "http://mirrors.ustc.edu.cn/alpine/v3.7/main/" > /etc/apk/repositories ;fi \
@@ -23,7 +23,7 @@ RUN if [ $(wget -qO- ipinfo.io/country) == CN ]; then echo "http://mirrors.ustc.
 
 RUN apk upgrade --update \
     && apk add bash tzdata libsodium \
-    && apk add --virtual .build-deps \
+    && apk add --virtual \
         autoconf \
         automake \
         xmlto \
@@ -39,14 +39,13 @@ RUN apk upgrade --update \
         pcre-dev \
         udns-dev \
         tar \
-        git \
-    && curl -sSLO ${KCP_DOWNLOAD_URL} \
-    && tar -zxf kcptun-linux-amd64-${KCP_VERSION}.tar.gz \
+        git
+
+RUN wget --no-check-certificate  ${KCP_DOWNLOAD_URL} \
+    && tar -zxf kcptun-linux-amd64-$KCP_VERSION.tar.gz \
     && mv server_linux_amd64 /usr/bin/kcpserver \
     && mv client_linux_amd64 /usr/bin/kcpclient \
-    && ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
-    && echo $TZ > /etc/timezone \
-    && rm -rf kcptun-linux-amd64-${KCP_VERSION}.tar.gz \
+    && rm -rf kcptun-linux-amd64-$KCP_VERSION.tar.gz \
         /var/cache/apk/*
 
 ADD entrypoint.sh /entrypoint.sh
